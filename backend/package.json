@@ -1,0 +1,23 @@
+{
+  "name": "chat-room-backend",
+  "version": "1.0.0",
+  "description": "The backend to my chat-room demo",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nicballesteros/chat-room.git"
+  },
+  "keywords": [
+    "chat",
+    "room"
+  ],
+  "author": "Nic Ballesteros",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nicballesteros/chat-room/issues"
+  },
+  "homepage": "https://github.com/nicballesteros/chat-room#readme"
+}
