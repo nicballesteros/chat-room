@@ -19,5 +19,9 @@
   "bugs": {
     "url": "https://github.com/nicballesteros/chat-room/issues"
   },
-  "homepage": "https://github.com/nicballesteros/chat-room#readme"
+  "homepage": "https://github.com/nicballesteros/chat-room#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "passport": "^0.4.1"
+  }
 }
