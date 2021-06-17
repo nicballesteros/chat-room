@@ -1,2 +1,6 @@
 backend/node_modules/*
 chat-room-front/node_modules/*
+
+.env
+
+./db/*

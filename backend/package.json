@@ -4,7 +4,9 @@
   "description": "The backend to my chat-room demo",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "debug": "NODE_ENV=debug nodemon index.js",
+    "serve": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -21,7 +23,9 @@
   },
   "homepage": "https://github.com/nicballesteros/chat-room#readme",
   "dependencies": {
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "nodemon": "^2.0.7",
     "passport": "^0.4.1"
   }
 }

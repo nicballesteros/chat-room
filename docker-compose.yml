@@ -2,12 +2,13 @@ version: '3'
 
 services: 
     db: 
-        image: postgres
+        image: mongo
+        container_name: 'chat-room-db'
         restart: always
-        env_file: 
-            - ./db/db.env
+        # env_file: 
+        #     - ./db.env
         volumes: 
-            - ./db:/var/lib/postgresql/data/
+            - ./db:/data/db
     
     #backend:
     #frontend:
