@@ -5,10 +5,11 @@ services:
         image: mongo
         container_name: 'chat-room-db'
         restart: always
-        # env_file: 
-        #     - ./db.env
+        ports: 
+            - "27017:27017"
         volumes: 
             - ./db:/data/db
+        command: [--auth]
     
     #backend:
     #frontend:

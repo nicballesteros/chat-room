@@ -1,6 +1,36 @@
 backend/node_modules/*
 chat-room-front/node_modules/*
 
-.env
+*.env
 
 ./db/*
+
+db/*
+
+db
+
+.pem
+
+db/_mdb_catalog.wt
+db/collection-4--2007102066535408567.wt
+db/collection-2--2007102066535408567.wt
+db/collection-0--2007102066535408567.wt
+db/collection-7--2007102066535408567.wt
+db/index-1--2007102066535408567.wt
+db/index-3--2007102066535408567.wt
+db/index-5--2007102066535408567.wt
+db/index-6--2007102066535408567.wt
+db/index-8--2007102066535408567.wt
+db/index-9--2007102066535408567.wt
+db/mongod.lock
+db/sizeStorer.wt
+db/storage.bson
+db/WiredTiger
+db/WiredTiger.lock
+db/WiredTiger.turtle
+db/WiredTiger.wt
+db/WiredTigerHS.wt
+backend/auth/keys/id_rsa_priv.pem
+backend/auth/keys/id_rsa_pub.pem
+db/collection-0--3620525141392990007.wt
+db/index-1--3620525141392990007.wt
