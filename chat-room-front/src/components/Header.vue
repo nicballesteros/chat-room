@@ -2,7 +2,7 @@
     <div id="header">
         <div class="header-col">
             <div id="logo-container">
-                <img src="../assets/logo.png" id="logo">
+                <img src="../assets/logo.png" id="logo" @click="logoClick()">
             </div>
         </div>
         <div class="header-col" id="name-container-parent">
@@ -38,6 +38,15 @@ export default {
             //all other buttons should just push on router.
             this.$router.push(link);
         },
+        logoClick() {
+            console.log('logo');
+            
+            if (this.$router.currentRoute.path === '/') {
+                return;
+            }
+
+            this.$router.push('/');
+        }
     },
     data() {
         return {

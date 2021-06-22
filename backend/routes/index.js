@@ -11,9 +11,9 @@ router.use((req, res, next) => {
     next();
 });
 
-router.get('/', (req, res) => {
-    res.send('hello world');
-});
+// router.get('/', (req, res) => {
+//     res.send('hello world');
+// });
 
 router.post('/api/register', require('./api/register'));
 router.post('/api/login', require('./api/login'));

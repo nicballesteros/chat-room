@@ -10,5 +10,5 @@ module.exports = async (req, res, next) => {
     res.status(200).json({
         success: true,
         msg: 'You are authenticated',
-    })
+    });
 };

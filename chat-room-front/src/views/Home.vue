@@ -11,6 +11,8 @@
 // @ is an alias to /src
 import Header from "@/components/Header.vue";
 
+import axios from 'axios';
+
 export default {
   name: 'Home',
   components: {
@@ -23,39 +25,41 @@ export default {
     }
   },
   methods: {
-    getUser() {
-      this.user = JSON.parse(localStorage.getItem('user'));
-    },
-    chooseButtons() {
-      if (this.user) {
-        this.navButtons = [
-          {
-            title: 'Sign Out',
-            link: null,
-          }
-        ];
-        
-        return;
-      }
-
-      this.navButtons = [
-        {
-          title: 'Login',
-          link: '/login',
-        }, 
-        {
-          title: 'Register',
-          link: '/register',
-        }
-      ];
-    }
+      
   },
   created() {
-    //Populate the user variable.
-    this.getUser();
+    this.user = JSON.parse(localStorage.getItem('user'));
 
-    //Decide what buttons to print.
-    this.chooseButtons();
-  }
+    if (this.user) {
+      this.navButtons = [
+        {
+          title: 'Sign Out',
+          link: null,
+        }
+      ];
+      
+      axios.get('http://localhost:3000/api/protected', {
+        headers: {
+          Authorization: this.user.token,
+        }
+      }).then((res) => {
+        console.log(res);
+      });
+
+      return;
+    }
+
+    this.navButtons = [
+      {
+        title: 'Login',
+        link: '/login',
+      }, 
+      {
+        title: 'Register',
+        link: '/register',
+      }
+    ];
+    
+  },
 }
 </script>
