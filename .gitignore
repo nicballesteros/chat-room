@@ -3,11 +3,11 @@ chat-room-front/node_modules/*
 
 *.env
 
-./db/*
 
-db/*
 
-db
+/db
+
+
 
 .pem
 
@@ -34,3 +34,10 @@ backend/auth/keys/id_rsa_priv.pem
 backend/auth/keys/id_rsa_pub.pem
 db/collection-0--3620525141392990007.wt
 db/index-1--3620525141392990007.wt
+dbSetup.txt
+
+config.js
+
+./configDB/*
+
+configDB

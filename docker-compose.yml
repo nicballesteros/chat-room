@@ -9,6 +9,7 @@ services:
             - "27017:27017"
         volumes: 
             - ./db:/data/db
+            - ./config.js:/data/config.js
         command: [--auth]
     
     #backend:

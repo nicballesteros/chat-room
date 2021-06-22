@@ -39,6 +39,9 @@ module.exports = async (req, res, next) => {
         username: req.body.username,
         hash: hash,
         salt: salt,
+        threads: [],
+        friends: [],
+        requests: [],
     });
 
     try {
