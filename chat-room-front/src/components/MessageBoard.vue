@@ -1,22 +1,11 @@
 <template>
     <div id="message-board-container">
-        <div id="friends-board-container">
+        <div id="friends-board-container" class="boards">
             <div id="friends-board">
-
+                <MessageThread v-bind:title="'Nic'" v-bind:last-msg="'Hey nic what is up?!'"/>
             </div>
-            <ul>
-                <li>
-                    Nic
-                </li>
-                <li>
-                    Sofie
-                </li>
-                <li>
-                    Jairo
-                </li>
-            </ul>
         </div>
-        <div id="message-display-container">
+        <div id="message-display-container" class="boards">
             <div id="message-display">
                 message
             </div>
@@ -25,12 +14,16 @@
 </template>
 
 <script>
+import MessageThread from './MessageThread.vue';
 
 
 export default {
     name: 'MessageBoard',
     props: {
         user: Object,
+    },
+    components: {
+        MessageThread,
     }
 }
 </script>
@@ -40,18 +33,25 @@ export default {
         display: flex;
         border: 1px none #000;
         border-radius: 10px;
-        background-color: #f0f0f0;
-        /* margin: 12px; */
+        background: #f0f0f0;
         flex: 1;
         align-items: stretch;
     }
 
+    .boards {
+        margin: 16px;
+        border: 1px none #000;
+        border-radius: 20px;
+        background: #f7f7f7;    
+    }
+
     #friends-board-container {
         flex: 1;
+        
     }
 
     #friends-board {
-        margin: 8px;
+        margin: 0px;
     }
 
     #message-display-container {
