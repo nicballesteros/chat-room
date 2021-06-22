@@ -28,6 +28,14 @@ export default {
     },
     methods: {
         handleButtonClick(link) {
+            //Signout check
+            if (link == null) {
+                localStorage.setItem('user', null);
+                this.$router.push('/login');
+                return;
+            }
+
+            //all other buttons should just push on router.
             this.$router.push(link);
         },
     },
@@ -36,8 +44,6 @@ export default {
             loginButtonText: 'login',
         }
     },
-    created() {
-    }
 }
 </script>
 

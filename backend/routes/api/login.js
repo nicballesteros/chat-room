@@ -51,10 +51,10 @@ module.exports = async (req, res, next) => {
                 success: true,
                 user: user,
                 token: tokenObj.token,
-                expires: tokenObj.expires,
+                expiresIn: tokenObj.expires,
             });
 
-            console.log(`User ${user} is now logged in`);
+            console.log(`User ${user.username} is now logged in`);
 
             return;
         }

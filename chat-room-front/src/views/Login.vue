@@ -1,7 +1,7 @@
 <template>
     <div id="login">
         <Header v-bind:nav-buttons="navButtons" />
-        <LoginForm v-on:login-event="login" v-bind:error-msg="errorMsg"/>
+        <LoginForm v-on:login-attempt="login" v-bind:error-msg="errorMsg"/>
     </div>
 
 </template>
@@ -31,6 +31,7 @@ export default {
                 }
             ],
             errorMsg: null,
+            user: null,
         }
     },
     methods: {
@@ -38,7 +39,22 @@ export default {
             //Make a post request to the api.
             axios.post('http://localhost:3000/api/login', userCredentials)
                 .then((res) => {
-                    console.log(res);
+                    let data = res.data;
+
+                    let username = data.user.username;
+                    let token = data.token;
+                    let expiresIn = data.expiresIn;
+
+                    data = {
+                        username: username,
+                        token: token,
+                        expiresIn: expiresIn,
+                    }
+
+                    //TODO store token
+                    localStorage.setItem('user', JSON.stringify(data));
+
+                    this.$router.push('/');
                 })
                 .catch((err) => {
                     if (err.response.status === 401) {
@@ -49,6 +65,14 @@ export default {
                     
                     console.log(err);
                 });
+        }
+    },
+    created() {
+        this.user = JSON.parse(localStorage.getItem('user'));
+
+        if (this.user) {
+            this.$router.push('/');
+            return;
         }
     }
 }

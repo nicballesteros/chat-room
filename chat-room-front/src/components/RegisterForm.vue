@@ -1,12 +1,12 @@
 <template>
-    <div id="login-form-container">
-        <form @submit="submitLoginForm" id="login-form">
-            <h3>Login</h3>
+    <div id="register-form-container">
+        <form @submit="submitRegisterForm" id="register-form">
+            <h3>Register</h3>
             <input 
                 type="text" 
                 name="username" 
                 id="username"
-                placeholder="Username"
+                placeholder="New Username"
                 v-model="username"
             >
             <input 
@@ -17,17 +17,24 @@
                 v-model="password"
             >
             <input 
+                type="password"
+                name="password2"
+                id="password2"
+                placeholder="Retype Password"
+                v-model="retypePassword"
+            >
+            <input 
                 type="submit"
                 value="Login"
                 id="submitBtn"
             >
-            <p v-if="this.localErrorMsg != null" id="errormsg">
+            <!-- <p v-if="this.localErrorMsg != null" id="errormsg">
                 {{ localErrorMsg }}
             </p>
 
             <p v-if="this.errorMsg != null" id="postErrMsg">
                 {{ this.errorMsg }}
-            </p>
+            </p> -->
 
         </form>
     </div>
@@ -35,54 +42,47 @@
 
 <script>
 export default {
-    name: 'LoginForm',
-    props: {
-        errorMsg: String,
-    },
+    name: 'RegisterForm',
     methods: {
-        submitLoginForm(e) {
+        submitRegisterForm(e) {
             e.preventDefault();
 
-            if (!this.username || !this.password) {
-                this.localErrorMsg = "Please enter a valid Username and Password!";
+            if (this.password == null || this.retypePassword == null || this.username == null) {
+                //TODO error msg
+
+                console.error('Cannot have null values');
+
                 return;
             }
 
-            if (this.localErrorMsg) {
-                this.localErrorMsg = null;
+            if (this.password !== this.retypePassword) {
+                //TODO make error msg
+
+                console.error('Passwords do not match');
+
+                return;
             }
 
-            //Construct the user authentication object.
-            const formData = {
+            const newUser = {
                 username: this.username,
                 password: this.password,
             }
 
-            //Emit to Login Page (parent) that the user wants to post data.
-            this.$emit('login-attempt', formData);
-        },
+            this.$emit('register-user', newUser);
+        }
     },
     data() {
         return {
             username: null,
             password: null,
-            showErrorMsg: false,
-            localErrorMsg: null,
+            retypePassword: null,
         }
-    },
-    // created() {
-    //     //To protect prop manipulation.
-    //     this.localErrorMsg = this.errorMsg;
-    // },
-    // updated() {
-    //     //To protect prop manipulation.
-    //     this.localErrorMsg = this.errorMsg;
-    // }
+    }
 }
 </script>
 
 <style scoped>
-    #login-form-container {
+    #register-form-container {
         width: 25%;
         border: 1px none #000;
         border-radius: 10px;
@@ -92,7 +92,7 @@ export default {
         margin-top: 24px;
     }
 
-    #login-form {
+    #register-form {
         display: flex;
         flex-direction: column;
         justify-content: space-around;
