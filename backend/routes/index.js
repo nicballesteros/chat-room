@@ -15,8 +15,8 @@ router.get('/', (req, res) => {
     res.send('hello world');
 });
 
-router.post('/register', require('./api/register'));
-router.post('/login', require('./api/login'));
-router.get('/protected', passport.authenticate('jwt', { session: false }), require('./api/protected'));
+router.post('/api/register', require('./api/register'));
+router.post('/api/login', require('./api/login'));
+router.get('/api/protected', passport.authenticate('jwt', { session: false }), require('./api/protected'));
 
 module.exports = router;

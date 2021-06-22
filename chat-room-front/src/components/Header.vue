@@ -1,7 +1,9 @@
 <template>
     <div id="header">
-        <div class="header-col" id="logo-container">
-            <img src="../assets/logo.png" id="logo">
+        <div class="header-col">
+            <div id="logo-container">
+                <img src="../assets/logo.png" id="logo">
+            </div>
         </div>
         <div class="header-col" id="name-container-parent">
             <div id="name-container">
@@ -48,23 +50,25 @@ export default {
         justify-content: space-between;
         align-items: center;
     }
+ 
+    #logo-container {
+        height: 100%;
+        width: 100%;
+        /* text-align: left; */
+    }
 
     #logo {
         margin: 16px;
         max-height: 100%;
         width: 50px;
-    }
-
-    #login-container {
-        margin: 16px;
+        float: left;
     }
 
     button {
         margin: 12px;
     }
 
-
-    /* #login-btn {
-        text-decoration: none;
-    } */
+    .header-col {
+        flex: 1;
+    }
 </style>

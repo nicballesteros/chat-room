@@ -8,10 +8,25 @@ const utils = require('../../auth/utils');
 
 module.exports = async (req, res, next) => {
     try {
-        //find the user in the database.
-        let user = await User.findOne({
-            username: req.body.username,
-        });
+        let user;
+
+        try {
+
+            //find the user in the database.
+            user = await User.findOne({
+                username: req.body.username,
+            });
+
+        } catch {
+            res.status(401).json({
+                success: false,
+                msg: "Could not find user",
+            });
+
+            console.log('User was not found in database');
+
+            return;
+        }
 
         //If the user was not found.
         if (!user) {
@@ -19,6 +34,10 @@ module.exports = async (req, res, next) => {
                 success: false,
                 msg: "Could not find user",
             });
+
+            console.log('User was not found in database');
+
+            return;
         }
 
         //Validate the password passed from the user.
@@ -34,6 +53,8 @@ module.exports = async (req, res, next) => {
                 token: tokenObj.token,
                 expires: tokenObj.expires,
             });
+
+            console.log(`User ${user} is now logged in`);
 
             return;
         }
