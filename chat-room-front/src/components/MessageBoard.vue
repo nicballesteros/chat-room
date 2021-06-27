@@ -9,16 +9,14 @@
             </div>
         </div>
         <div id="message-display-container" class="boards">
-            <div id="message-display">
-                message
-            </div>
+            <MessageContent :messages="this.messages" :title="this.title" />
         </div>
     </div>
 </template>
 
 <script>
 import MessageThread from './MessageThread.vue';
-
+import MessageContent from './MessageContent.vue';
 
 export default {
     name: 'MessageBoard',
@@ -28,18 +26,24 @@ export default {
     },
     components: {
         MessageThread,
+        MessageContent,
     },
     methods: {
         handleNewThread() {
             this.$emit('new-thread-click');
         },
-        handleMessages(id) {
-            console.log(id)
+        handleMessages(data) {
+            // console.log(data);
+            this.messages = data.messages;
+            this.title = data.title;
+
+            console.log(this.messages);
         }
     },
     data() {
         return {
-            
+            messages: null,
+            title: null,
         }
     }
 }

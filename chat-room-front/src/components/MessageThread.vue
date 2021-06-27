@@ -99,7 +99,7 @@ export default {
                 }
 
 
-                console.log(this.threads);
+                // console.log(this.threads);
             }).catch (err => {
                 console.error(err);
             });
@@ -131,7 +131,7 @@ export default {
     }
 
     .thread {
-        background-color: #999999;
+        background-color: #a1a1a1;
         border: 1px none #000;
         border-radius: 5px;
         margin: 16px;
@@ -141,7 +141,7 @@ export default {
     }
 
     .thread-text {
-        color: #e0e0e0;
+        color: #2c3e50;
         margin: 8px;
     }
 
