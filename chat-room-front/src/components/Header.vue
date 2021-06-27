@@ -31,6 +31,7 @@ export default {
             //Signout check
             if (link == null) {
                 localStorage.setItem('user', null);
+                //TODO tell the server that this user is no longer active.
                 this.$router.push('/login');
                 return;
             }

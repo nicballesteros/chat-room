@@ -4,8 +4,9 @@
 //Initialize the connection to the mongodb server.
 const mongo = require('./db/mongo.js');
 
-//Configure the user model and schema
+//Configure the db schemas.
 require('./db/models/user');
+require('./db/models/messageThread');
 
 //Require what is necessary for the express app.
 const express = require('express');
@@ -28,7 +29,7 @@ app.use(cors());
 app.use(passport.initialize());
 
 //Use the predefined routes for the backend.
-app.use(routes);
+app.use('/api', routes);
 
 //Listen to the port PORT and send requests to the routes.
 app.listen(PORT, () => {

@@ -6,17 +6,22 @@ const router = express.Router();
 
 const passport = require('passport');
 
+const userRoutes = require('./api/user/routes');
+
 router.use((req, res, next) => {
     console.log(`API Endpoint: '${req.url}' Time: ${Date.now()}`);
     next();
 });
 
-// router.get('/', (req, res) => {
-//     res.send('hello world');
-// });
+router.use('/user', userRoutes);
 
-router.post('/api/register', require('./api/register'));
-router.post('/api/login', require('./api/login'));
-router.get('/api/protected', passport.authenticate('jwt', { session: false }), require('./api/protected'));
+//Base API Endpoints.
+router.post('/register', require('./api/register'));
+router.post('/login', require('./api/login'));
+router.get('/protected', passport.authenticate('jwt', { session: false }), require('./api/protected'));
+
+router.get('/getthreaddata', passport.authenticate('jwt', { session: false }, require('./api/getThreadData')))
+
+// router.get('/api/user/threads');
 
 module.exports = router;

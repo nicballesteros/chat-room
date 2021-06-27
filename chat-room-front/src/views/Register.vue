@@ -34,8 +34,7 @@ export default {
     },
     methods: {
         registerUser(newUser) {
-            console.log(newUser);
-
+            //Make the new user in the server.
             axios.post('http://localhost:3000/api/register', newUser)
                 .then(async (res) => {
                     let data = res.data;

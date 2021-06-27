@@ -2,7 +2,9 @@
     <div id="message-board-container">
         <div id="friends-board-container" class="boards">
             <div id="friends-board">
-                <MessageThread v-bind:title="'Nic'" v-bind:last-msg="'Hey nic what is up?!'"/>
+                <MessageThread
+                    v-on:new-thread-click="handleNewThread" 
+                />
             </div>
         </div>
         <div id="message-display-container" class="boards">
@@ -21,9 +23,20 @@ export default {
     name: 'MessageBoard',
     props: {
         user: Object,
+        isNewMessageModelVisible: Boolean,
     },
     components: {
         MessageThread,
+    },
+    methods: {
+        handleNewThread() {
+            this.$emit('new-thread-click');
+        }
+    },
+    data() {
+        return {
+            
+        }
     }
 }
 </script>
@@ -52,6 +65,7 @@ export default {
 
     #friends-board {
         margin: 0px;
+        height: 100%;
     }
 
     #message-display-container {
