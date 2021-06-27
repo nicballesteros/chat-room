@@ -4,6 +4,7 @@
             <div id="friends-board">
                 <MessageThread
                     v-on:new-thread-click="handleNewThread" 
+                    v-on:show-messages="handleMessages"
                 />
             </div>
         </div>
@@ -31,6 +32,9 @@ export default {
     methods: {
         handleNewThread() {
             this.$emit('new-thread-click');
+        },
+        handleMessages(id) {
+            console.log(id)
         }
     },
     data() {

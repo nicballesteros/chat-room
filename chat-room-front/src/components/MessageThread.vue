@@ -5,7 +5,8 @@
                 class="thread"
                 :key="thread.id" 
                 v-for="thread in threads" 
-                @click="messageThreadClick">
+                v-on:click="messageThreadClick(thread._id)">
+                
                 <h4 class="thread-text">{{thread.title}}</h4>
                 <p v-if="thread.lastMsg != null" class="thread-text message-text">{{thread.lastMsg}}</p>
                 <p v-if="thread.lastMsg == null" class="thread-text message-text">Send a Message!</p>
@@ -40,8 +41,18 @@ export default {
         newThread() {
             this.$emit('new-thread-click');
         },
-        messageThreadClick(_id) {
-            console.log(_id);
+        messageThreadClick(id) {
+            console.log(id);
+
+            let foundThread;
+
+            this.threads.forEach(thread => {
+                if (thread._id == id) {
+                    foundThread = thread;
+                }
+            });
+
+            this.$emit('show-messages', foundThread);
         }
     },
     data() {
