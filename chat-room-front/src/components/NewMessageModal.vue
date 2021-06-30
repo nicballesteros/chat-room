@@ -34,8 +34,9 @@
 
 <script>
 import CloseIcon from 'vue-material-design-icons/Close.vue'
+import { usersExists } from '@/api/util';
 
-import axios from 'axios';
+import { mapGetters } from 'vuex';
 
 export default {
     name: "NewMessageModal",
@@ -87,38 +88,38 @@ export default {
             //Close the modal.
             this.closeModal();
         },
-        async checkUser(usernames) {
-            //Get the user from local storage.
-            let user = JSON.parse(localStorage.getItem('user'));
-            
+        async checkUser(usernames) {  
             //This really should never happen but is here just in case.
-            if (user == null) {
+            if (!this.isLoggedIn()) {
                 this.errMsg = "Login before making messages";
                 return false; //Should prolly throw an err.
             }
 
+
             try {
-                //Call the server to see if the user exists.
-                let res = await axios.post('http://localhost:3000/api/user/exists', {
-                    usernames: usernames,
-                }, {
-                    headers: {
-                        Authorization: user.token,
-                    },
-                });
+                return usersExists(usernames);
+                
 
-                //If the user does not exist, print an err msg.
-                if (!res.data.exists) {
-                    this.errMsg = "The user inputted does not exist";
-                    return false;
-                }
+                // //Call the server to see if the user exists.
+                // let res = await axios.post('http://localhost:3000/api/user/exists', {
+                //     usernames: usernames,
+                // });
 
-                return true;
+                // //If the user does not exist, print an err msg.
+                // if (!res.data.exists) {
+                //     this.errMsg = "The user inputted does not exist";
+                //     return false;
+                // }
+
+                // return true;
 
             } catch (err) {
                 console.error(err);
             }
         },
+        ...mapGetters({
+            isLoggedIn: 'isLoggedIn',
+        }),
         //TODO provide REGEX support so that they can search for users.
     },
     data() {

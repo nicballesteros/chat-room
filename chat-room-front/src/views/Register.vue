@@ -9,7 +9,7 @@
 import Header from '@/components/Header.vue';
 import RegisterForm from '@/components/RegisterForm.vue';
 
-import axios from 'axios';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
     name: 'Register',
@@ -33,50 +33,62 @@ export default {
         }
     },
     methods: {
-        registerUser(newUser) {
-            //Make the new user in the server.
-            axios.post('http://localhost:3000/api/register', newUser)
-                .then(async (res) => {
-                    let data = res.data;
+        async registerUser(newUser) {
+            await this.register(newUser);
 
-                    let expiresIn = data.expiresIn;
-                    let token = data.token;
-                    let username = data.user.username;
+            if (this.isLoggedIn()) {
+                this.$router.push('/');
+            } else {
+                //TODO show err msg
+            }
+            
+            // //Make the new user in the server.
+            // axios.post('http://localhost:3000/api/register', newUser)
+            //     .then(async (res) => {
+            //         let data = res.data;
 
-                    try {
-                        //TODO Store the JWT token.
-                        localStorage.setItem('user', JSON.stringify({
-                            expiresIn: expiresIn,
-                            token: token,
-                            username: username,
-                        }))
+            //         let expiresIn = data.expiresIn;
+            //         let token = data.token;
+            //         let username = data.user.username;
 
-                        this.$router.push('/');
+            //         try {
+            //             //TODO Store the JWT token.
+            //             localStorage.setItem('user', JSON.stringify({
+            //                 expiresIn: expiresIn,
+            //                 token: token,
+            //                 username: username,
+            //             }))
 
-                    } catch (err) {
-                        console.error(err);
-                    }
-                })
-                .catch((err) => {
-                    let res = err.response;
+            //             this.$router.push('/');
 
-                    if (res.status === 409) {
-                        //TODO make an actual error.
-                        console.error('Username taken');
+            //         } catch (err) {
+            //             console.error(err);
+            //         }
+            //     })
+            //     .catch((err) => {
+            //         let res = err.response;
 
-                        // this.$router.go();
+            //         if (res.status === 409) {
+            //             //TODO make an actual error.
+            //             console.error('Username taken');
 
-                        return;
-                    }
+            //             // this.$router.go();
 
-                    console.error(err);
-                });
+            //             return;
+            //         }
+
+            //         console.error(err);
+            //     });
         },
+        ...mapActions({
+            register: 'register',
+        }),
+        ...mapGetters({
+            isLoggedIn: 'isLoggedIn',
+        })
     },
     created() {
-        this.user = JSON.parse(localStorage.getItem('user'));
-
-        if (this.user) {
+        if (this.isLoggedIn()) {
             this.$router.push('/');
         }
     }

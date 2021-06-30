@@ -10,10 +10,10 @@
 
     <div id="message-wrapper">
       <MessageBoard 
-        v-if="this.user != null" 
-        v-bind:user="this.user"
+        v-if="this.isLoggedIn()" 
+        v-bind:user="this.getUser()"
         v-on:new-thread-click="handleNewThread"
-        v-bind:key="this.key"
+        :key="this.key"
       />
 
     </div>
@@ -27,7 +27,9 @@ import MessageBoard from "@/components/MessageBoard.vue";
 
 import NewMessageModal from "@/components/NewMessageModal.vue";
 
-import axios from 'axios';
+import { createNewThread } from '@/api/util';
+
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'Home',
@@ -41,7 +43,7 @@ export default {
       navButtons: [],
       user: null,
       isNewMessageModalVisible: false,
-      key: 0,
+      key: 0, //Used to reload the page. Lil hack.
     }
   },
   methods: {
@@ -51,28 +53,34 @@ export default {
       handleNewThreadClose() {
         this.isNewMessageModalVisible = false;
       },
-      handleNewThreadSubmit(usernames) {
-        //Tell the server a new thread is to be created.
-        axios.post('http://localhost:3000/api/user/newthread', {
-          usernames: usernames,
-        }, {
-          headers: {
-            Authorization: this.user.token,
+      async handleNewThreadSubmit(usernames) {
+        try {
+          let res = await createNewThread(usernames);
+
+          if (res) {
+            this.key++;
+            return;
           }
-        }).then((res) => {
-          console.log(res);
-          this.key++;
-        });
+
+          //TODO show an error message that the thread was not created.
+        } catch (err) {
+          console.error(err);
+        }
       },
+      ...mapGetters({
+        isLoggedIn: 'isLoggedIn',
+        getUser: 'getUser',
+      }),
   },
   created() {
-    this.user = JSON.parse(localStorage.getItem('user'));
+    // this.user = JSON.parse(localStorage.getItem('user'));
 
-    if (this.user) {
+    if (this.isLoggedIn()) {
+      console.log('logged in');
         this.navButtons = [
         {
           title: 'Sign Out',
-          link: null,
+          link: '/logout',
         }
       ];
       

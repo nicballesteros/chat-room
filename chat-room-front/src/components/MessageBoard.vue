@@ -3,18 +3,25 @@
         <div id="friends-board-container" class="boards">
             <div id="friends-board">
                 <MessageThread
-                    v-on:new-thread-click="handleNewThread" 
-                    v-on:show-messages="handleMessages"
+                v-on:new-thread-click="handleNewThread" 
+                v-on:show-messages="handleMessages"
                 />
             </div>
         </div>
         <div id="message-display-container" class="boards">
-            <MessageContent :messages="this.messages" :title="this.title" />
+            <MessageContent 
+            :messages="this.messages"
+            :title="this.title" 
+            :threadId="this.threadId"
+            :threadExists="true"
+            />
         </div>
     </div>
 </template>
 
 <script>
+//TODO add the functionality of the thread chooser. Maybe just get all messages and threads and sockets
+//here so that it can be passed down into the child components.
 import MessageThread from './MessageThread.vue';
 import MessageContent from './MessageContent.vue';
 
@@ -33,7 +40,8 @@ export default {
             this.$emit('new-thread-click');
         },
         handleMessages(data) {
-            // console.log(data);
+            console.log(data);
+
             this.messages = data.messages;
             this.title = data.title;
 
@@ -44,6 +52,7 @@ export default {
         return {
             messages: null,
             title: null,
+            threadId: null,
         }
     }
 }

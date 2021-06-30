@@ -2,8 +2,11 @@
     <div id="message-content-root">
         <div id="content">
             <div id="history" class="items">
-                <div v-if="this.title == null">
+                <div v-if="this.title == null && this.threadExists">
                     <h4>Choose a thread to start chatting!</h4>
+                </div>
+                <div v-if="!this.threadExists">
+                    <h4>Press the plus icon to make a new thread!</h4>
                 </div>
                 <div 
                     id="thread-title"
@@ -51,6 +54,8 @@ export default {
     props: {
         messages: Array,
         title: String,
+        threadId: String,
+        threadExists: Boolean,
     },
     data() {
         return {
@@ -72,6 +77,8 @@ export default {
     },
     created() {
         console.log(this.messages);
+
+
     }
 
 }

@@ -2,16 +2,28 @@
     <div id="message-thread-root">
         <div id="threads">
             <div 
-                class="thread"
-                :key="thread.id" 
-                v-for="thread in threads" 
-                v-on:click="messageThreadClick(thread._id)">
+            class="thread"
+            :key="thread.id" 
+            v-for="thread in threads" 
+            v-on:click="messageThreadClick(thread._id)">
                 
-                <h4 class="thread-text">{{thread.title}}</h4>
-                <p v-if="thread.lastMsg != null" class="thread-text message-text">{{thread.lastMsg}}</p>
-                <p v-if="thread.lastMsg == null" class="thread-text message-text">Send a Message!</p>
+                <h4 
+                class="thread-text">
+                    {{thread.title}}
+                </h4>
+
+                <p 
+                v-if="thread.lastMsg != null" 
+                class="thread-text message-text">
+                    {{thread.lastMsg}}
+                </p>
+
+                <p 
+                v-if="thread.lastMsg == null" 
+                class="thread-text message-text">
+                    Send a Message!
+                </p>
             </div>
-            
         </div>
         <div v-on:click="newThread" id="new-thread-container">
             <div id="new-thread">
@@ -24,9 +36,16 @@
 <script>
 import AddIcon from 'vue-material-design-icons/Plus.vue';
 
+import { getThreads } from '@/api/util';
+
+getThreads.bind(this);
+
+
+import { mapGetters } from 'vuex';
+
 // import Vue from 'vue';
 
-import axios from 'axios';
+// import axios from 'axios';
 
 export default {
     name: 'MessageThread',
@@ -38,6 +57,10 @@ export default {
         AddIcon,
     },
     methods: {
+        ...mapGetters({
+            isLoggedIn: 'isLoggedIn',
+            getToken: 'getToken',
+        }),
         newThread() {
             this.$emit('new-thread-click');
         },
@@ -62,49 +85,40 @@ export default {
             user: null,
         }
     },
-    created() {
-        let user = JSON.parse(localStorage.getItem('user'));
+    async mounted() {
+        if (this.isLoggedIn()) {
+            this.threads = await getThreads(this.$http);
+            
+            //Create the thread titles.
 
-        if (user) {
-            axios.get('http://localhost:3000/api/user/getthreads', {
-                headers: {
-                    Authorization: user.token,
-                },
-            }).then((res) => {
-                this.threads = res.data.threads;
+            if (!this.threads) {
+                //No threads exist.
+                //TODO check this out and see if an err msg needs to be shown.
+                return;
+            }
 
-                this.user = JSON.parse(localStorage.getItem('user'));
+            for (let i = 0; i < this.threads.length; i++) {
+                this.threads[i].title = "";
 
-                //Create the thread titles.
-
-                for (let i = 0; i < this.threads.length; i++) {
-                    this.threads[i].title = "";
-
-                    if (this.threads[i].messages.length == 0) {
-                        this.threads[i].lastMsg = null;
-                    } else {
-                        this.threads[i].lastMsg = this.threads[i].messages[this.threads[i].messages.length - 1];
-                    }
-
-                    let users = this.threads[i].users;
-
-                    for(let j = 0; j < users.length; j++) {
-                        if (users[j].username !== this.user.username) {
-                            this.threads[i].title += users[j].username
-                            this.threads[i].title += ", ";
-                        }
-                    }
-
-                    this.threads[i].title = this.threads[i].title.substring(0, this.threads[i].title.length - 2);
+                if (this.threads[i].messages.length == 0) {
+                    this.threads[i].lastMsg = null;
+                } else {
+                    this.threads[i].lastMsg = this.threads[i].messages[this.threads[i].messages.length - 1];
                 }
 
+                let users = this.threads[i].users;
 
-                // console.log(this.threads);
-            }).catch (err => {
-                console.error(err);
-            });
+                for(let j = 0; j < users.length; j++) {
+                    if (users[j].username !== this.user.username) {
+                        this.threads[i].title += users[j].username
+                        this.threads[i].title += ", ";
+                    }
+                }
+
+                this.threads[i].title = this.threads[i].title.substring(0, this.threads[i].title.length - 2);
+            }
         }
-    }
+    },
 }
 </script>
 

@@ -2,7 +2,7 @@
     <div id="header">
         <div class="header-col">
             <div id="logo-container">
-                <img src="../assets/logo.png" id="logo" @click="logoClick()">
+                <img src="../assets/logo.png" id="logo" @click="handleButtonClick('/')">
             </div>
         </div>
         <div class="header-col" id="name-container-parent">
@@ -19,6 +19,8 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex';
+
 export default {
     name: "Header",
     props: {
@@ -27,31 +29,43 @@ export default {
         },
     },
     methods: {
-        handleButtonClick(link) {
-            //Signout check
-            if (link == null) {
-                localStorage.setItem('user', null);
-                //TODO tell the server that this user is no longer active.
+        async handleButtonClick(link) {
+            //Check we are not going to the same page that we are already on.
+            if (this.$router.currentRoute.path === link) {
+                return;
+            }
+
+            //If the link is to logout, check if the user can be logged out.
+            if (link == '/logout') {
+                if (this.isLoggedIn()) {
+                    await this.logout();
+                }
+
                 this.$router.push('/login');
                 return;
             }
 
-            //all other buttons should just push on router.
-            this.$router.push(link);
-        },
-        logoClick() {
-            console.log('logo');
-            
-            if (this.$router.currentRoute.path === '/') {
-                return;
+            //This is to avoid triggering the Navigation Guard put in place
+            //by the router if a user is logged in.
+            if (link === '/login' || link === '/register') {
+                if (this.isLoggedIn()) {
+                    return;
+                }
             }
 
-            this.$router.push('/');
-        }
+            this.$router.push(link);
+        },
+        ...mapGetters({
+            isLoggedIn: 'isLoggedIn',
+            getUser: 'getUser',
+        }),
+        ...mapActions({
+            logout: 'logout',
+        })
     },
     data() {
         return {
-            loginButtonText: 'login',
+            loginButtonText: '/login',
         }
     },
 }
