@@ -3,20 +3,27 @@ import Vuex from 'vuex';
 
 import axios from 'axios';
 
+import io from 'socket.io-client';
+
 Vue.use(Vuex);
 
 Vue.prototype.$http = axios;
 
 const protocol = 'http://';
 const hostname = location.hostname;
+const port = 3000;
 
 export default new Vuex.Store({
   state: {
      user: {},
      token: localStorage.getItem('token') || '',
      status: '',
+     socket: {},
   },
   mutations: {
+    set_user(state, user) {
+      state.user = user;
+    },
     auth_request(state) {
       state.status = 'loading';
     },
@@ -31,6 +38,15 @@ export default new Vuex.Store({
     logout(state) {
       state.status = '';
       state.token = '';
+      state.user = {};
+      //TODO close socket.
+    },
+    set_socket(state, socket) {
+      state.socket = socket;
+    },
+    close_socket(state) {
+      //TODO close socket.
+      state.socket = {};
     }
   },
   actions: {
@@ -81,10 +97,48 @@ export default new Vuex.Store({
       }
     },
     async logout({ commit }) {
+      //Set the state to logout.
       commit('logout');
 
+      //Remove all data from the local storage. This will affect isLoggedIn() to be false.
       localStorage.removeItem('token');
+
+      //Remove all auth headers from axios.
       delete axios.defaults.headers.common['Authorization'];
+    },
+    async getUserFromServer({ commit }) {
+      try {
+        //Get the server to give us the information on the user.
+        let res = await axios.get(`${protocol}${hostname}:${port}/api/user/getuser`);
+
+        //If there was no response from the server, throw an error. Catch it higher up and display an error msg.
+        if (!res) {
+          throw new Error('No response from server');
+        }
+
+        //Set the user in the store.
+        commit('set_user', res.data.user);
+      } catch (err) {
+        console.error(err);
+      }
+
+    },
+    async makeSocket({ commit }) {
+      try {
+        //TODO make this authenticate.
+        let socket = io(`${protocol}${hostname}:${port}/api/messagesocket`);
+
+        commit('set_socket', socket);
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    async closeSocket({ commit }) {
+      try {
+        commit('close_socket');
+      } catch (err) {
+        console.error(err);
+      }
     },
   },
   modules: {
@@ -95,5 +149,7 @@ export default new Vuex.Store({
     getUser: (state) => state.user,
     getStatus: (state) => state.status,
     isLoggedIn: (state) => !!state.token,
+    getSocket: (state) => state.socket,
+    hasSocket: (state) => state.socket !== {},
   }
 })

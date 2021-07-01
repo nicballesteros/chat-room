@@ -14,16 +14,29 @@
                         <h4>{{this.title}}</h4>
                 </div>
                 <div id="messages" v-if="this.messages != null">
+                    <!-- An error message showing that the message thread has no messages -->
                     <div 
                     id="no-messages-msg"
                     v-if="this.messages.length === 0">
                         <p>No messages yet. Be the first to send one!</p>
                     </div>
                     <div 
-                        class="message" 
+                        class="message-container" 
                         v-for="(message, index) in messages" 
                         :key="index">
-                    
+                        <div class="spacer" v-if="message.user === getUser().username"></div>
+                        <div class="message">
+                            <p class="title">
+                                {{message.user}}
+                            </p>
+                            <p class="content">
+                                {{message.message}}
+                            </p>
+                            <p class="timestamp">
+                                {{new Date(message.timestamp).toLocaleString()}}
+                            </p>
+                        </div>
+                        <div class="spacer" v-if="message.user !== getUser().username"></div>
                     </div>
                 </div>
             </div>
@@ -49,38 +62,49 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 export default {
     name: 'MessageContent',
     props: {
+        currentUsername: String,
         messages: Array,
         title: String,
-        threadId: String,
         threadExists: Boolean,
     },
     data() {
         return {
             text: "",
+            username: null,
         }
     },
     methods: {
+        ...mapGetters({
+            getUser: 'getUser',
+        }),
         handleSend(e) {
             e.preventDefault();
+//TODO force the scroll window down when a new message is registered.
 
+            //If the text is empty, do not continue.
             if (this.text === "") {
                 return;
             }
 
-            let text = this.text;
+            //Save the data locally.
+            let message = this.text;
+
+            //Make the text in the message bar go back to nothing.
             this.text = "";
-            console.log(text);
+
+            //Send the message to the message board (parent component).
+            this.$emit('message-event', message);
         }
     },
-    created() {
-        console.log(this.messages);
-
-
+    updated() {
+        let messagesContainer = this.$el.querySelector('#messages');
+        console.log(messagesContainer);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
-
 }
 </script>
 
@@ -164,6 +188,7 @@ export default {
     #messages {
         border: 2px solid #2c3e50;
         height: 100%;
+        overflow: auto;
     }
 
     #no-messages-msg {
@@ -177,5 +202,43 @@ export default {
     #no-messages-msg p {
         margin: 0px;
         flex: 1
+    }
+
+    .message-container {
+        width: 100%;
+        display: flex;
+        justify-content: end;
+    }
+
+    .message {
+        flex: 1;
+        background-color: #007aff;
+        border: 1px none #000;
+        border-radius: 10px;
+        margin: 10px;
+        padding: 8px;
+    }
+
+    .message p {
+        margin: 2px;
+        text-align: left;
+    }
+
+    .message .title {
+        font-weight: bold;
+    }
+
+    .message .content {
+        text-align: left;
+    }
+
+    .message .timestamp {
+        color: #8d8d8d;
+        margin-top: 6px;
+        font-size: 10px;
+    }
+
+    .spacer {
+        flex: 3;
     }
 </style>

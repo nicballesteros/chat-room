@@ -57,5 +57,34 @@ module.exports = {
                 reject(err);
             }
         });
-    }
+    },
+
+    async saveMessageToDatabase(message, threadId, username) {
+        // let userId = await User.findOne({
+        //     username: username,
+        // })
+        try {
+
+            let messageObject = {
+                message: message,
+                user: username,
+                timestamp: Date.now(),
+            }; 
+
+            let thread = await MessageThread.findById(threadId);
+            
+            await MessageThread.updateOne({
+                _id: threadId,
+            }, {
+                $push: { 
+                    messages: messageObject,
+                }
+            });
+
+            return messageObject;
+        } catch (err) {
+            //TODO tell the client that an error has occurred. maybe.
+            console.error(err);
+        }
+    },
 }

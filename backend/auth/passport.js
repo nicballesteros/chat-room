@@ -8,8 +8,6 @@ const User = require('mongoose').model('User');
 const JWTStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 
-
-
 const pathToKey = path.join(__dirname, 'keys', 'id_rsa_pub.pem');
 const PUB_KEY = fs.readFileSync(pathToKey, 'utf8');
 
@@ -18,6 +16,8 @@ const passportJWTOptions = {
     secretOrKey: PUB_KEY,
     algorithms: ['RS256'],
 }
+
+//TODO implement a custom jwt strategy.
 
 const strategy = new JWTStrategy(passportJWTOptions, (payload, done) => {
     User.findOne({ _id: payload.sub })
@@ -33,6 +33,10 @@ const strategy = new JWTStrategy(passportJWTOptions, (payload, done) => {
         });
 });
 
-module.exports = (passport) => {
+let passportApplyJWTMiddleware = (passport) => {
     passport.use(strategy);
+}
+
+module.exports = {
+    passportApplyJWTMiddleware,
 };

@@ -7,6 +7,7 @@ const router = express.Router();
 const passport = require('passport');
 
 const userRoutes = require('./api/user/routes');
+// const messageRoutes = require('./api/message/messagesocket');
 
 router.use((req, res, next) => {
     console.log(`API Endpoint: '${req.url}' Time: ${Date.now()}`);
@@ -14,6 +15,8 @@ router.use((req, res, next) => {
 });
 
 router.use('/user', userRoutes);
+
+// router.use('/message', messageRoutes);
 
 //Base API Endpoints.
 router.post('/register', require('./api/register'));

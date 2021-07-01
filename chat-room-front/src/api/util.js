@@ -67,6 +67,7 @@ const createNewThread = async (usernames) => {
 /**
  * @description getThreads gets the threads that the user has access to from the server.
  * 
+ * @param {Object} httpClient
  * @returns {Array} An array of the threads that the user has access to.
  */
 
@@ -78,25 +79,34 @@ const getThreads = async (httpClient) => {
             throw new Error('No response from server');
         }
 
-        return res.threads;
+        return res.data.threads;
     } catch (err) {
         console.error(err);
         throw err;
     }
 }
 
-const getMessageSocket = async (threadId) => {
-    try {
-        console.log(threadId);
-        // return io.
-    } catch (err) {
-        console.error(err);
-    }
-};
+// const getMessageSocket = async (threadId) => {
+//     try {
+//         console.log(threadId);
+//         // return io.
+//     } catch (err) {
+//         console.error(err);
+//     }
+// };
+
+// const sendMessage = async (message, threadId) => {
+//     try {
+        
+//     } catch (err) {
+//         console.error(err);
+//     }
+// }
 
 export {
     usersExists,
     createNewThread,
     getThreads,
-    getMessageSocket,
+    // getMessageSocket,
+    // sendMessage,
 }

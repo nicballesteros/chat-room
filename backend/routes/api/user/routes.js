@@ -12,4 +12,6 @@ router.post('/newthread', passport.authenticate('jwt', { session: false }), requ
 
 router.get('/getthreads', passport.authenticate('jwt', { session: false }), require('./getThreads'));
 
+router.get('/getuser', passport.authenticate('jwt', { session: false }), require('./getUser'));
+
 module.exports = router;

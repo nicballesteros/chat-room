@@ -15,7 +15,7 @@
                 <p 
                 v-if="thread.lastMsg != null" 
                 class="thread-text message-text">
-                    {{thread.lastMsg}}
+                    {{`${thread.lastMsg.user}: ${thread.lastMsg.message}`}}
                 </p>
 
                 <p 
@@ -60,6 +60,7 @@ export default {
         ...mapGetters({
             isLoggedIn: 'isLoggedIn',
             getToken: 'getToken',
+            getUser: 'getUser',
         }),
         newThread() {
             this.$emit('new-thread-click');
@@ -75,7 +76,7 @@ export default {
                 }
             });
 
-            this.$emit('show-messages', foundThread);
+            this.$emit('show-thread', foundThread);
         }
     },
     data() {
@@ -87,9 +88,13 @@ export default {
     },
     async mounted() {
         if (this.isLoggedIn()) {
+            //Get the threads that this users is a part of from the server.
             this.threads = await getThreads(this.$http);
             
+            // console.log(this.threads);
             //Create the thread titles.
+
+            // console.log(this.getUser());
 
             if (!this.threads) {
                 //No threads exist.
@@ -98,23 +103,29 @@ export default {
             }
 
             for (let i = 0; i < this.threads.length; i++) {
+                //Create a new title for each thread.
                 this.threads[i].title = "";
 
+                //Get the last message that has been sent in the thread.
                 if (this.threads[i].messages.length == 0) {
                     this.threads[i].lastMsg = null;
                 } else {
                     this.threads[i].lastMsg = this.threads[i].messages[this.threads[i].messages.length - 1];
                 }
 
+                //Get an array of the users that are in the current thread.
                 let users = this.threads[i].users;
 
+                //Create a title string from those users names.
                 for(let j = 0; j < users.length; j++) {
-                    if (users[j].username !== this.user.username) {
-                        this.threads[i].title += users[j].username
+                    //Filter out all the users that are not the current user.
+                    if (users[j].username !== this.getUser().username) {
+                        this.threads[i].title += users[j].username;
                         this.threads[i].title += ", ";
                     }
                 }
 
+                //Get rid of the last ', ' in the title.
                 this.threads[i].title = this.threads[i].title.substring(0, this.threads[i].title.length - 2);
             }
         }
@@ -134,7 +145,7 @@ export default {
     }
 
     #threads {
-        flex: 19;
+        flex: 12;
         overflow: auto;
         min-height: 0;
         flex-shrink: 0;
@@ -165,11 +176,14 @@ export default {
 
     #new-thread-container {
         flex: 1;
+        overflow: visible;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     #new-thread {
-        margin: auto;
-        margin-bottom: 10px;
+        margin: 10px;
         width: 24px;
         border: 1px none #000;
         border-radius: 20px;

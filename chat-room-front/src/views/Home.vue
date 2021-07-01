@@ -73,10 +73,9 @@ export default {
       }),
   },
   created() {
-    // this.user = JSON.parse(localStorage.getItem('user'));
-
+    //Check to see if the user is already logged in.
     if (this.isLoggedIn()) {
-      console.log('logged in');
+      //If so, show sign out button only.
         this.navButtons = [
         {
           title: 'Sign Out',
@@ -96,6 +95,7 @@ export default {
       return;
     }
 
+    //Else show the login and register page buttons.
     this.navButtons = [
       {
         title: 'Login',
