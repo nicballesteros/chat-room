@@ -27,6 +27,8 @@ let app = express();
 
 const socketio = require('socket.io');
 const { saveMessageToDatabase } = require('./db/utils.js');
+const utils = require('./auth/utils.js');
+const { WSAENETUNREACH } = require('constants');
 
 // const http = require('http');
 let server = require('http').Server(app);
@@ -42,9 +44,21 @@ io
     .of('/api/messagesocket')
     .on('connection', (socket) => {
     console.log('user is connected');
-    socket.on('thread', (thread) => {
-        socket.thread = thread;
-        socket.join(thread);
+    socket.on('thread', async (thread) => {
+        //Ignore the request if the user does not send the necessary data.
+        if (thread.threadId == null || thread.auth == null) {
+            return;
+        }
+
+        //Authenticate the user
+        let auth = await utils.authSocket(thread.auth, thread.threadId)
+
+        //If the user was not authenticated.
+        if(!auth.authenticated) {
+            return;
+        }
+
+        socket.join(thread.threadId);
     });
 
     socket.on('message', async (message) => {
@@ -54,19 +68,24 @@ io
             return;
         }
 
+        //Authenticate the user.
+        let auth = await utils.authSocket(message.auth, message.threadId);
+
+        //If the user was not authenticated, exit this function.
+        if(!auth.authenticated) {
+            return;
+        }
+
+        //Join the correct custom room.
         socket.join(message.threadId);
 
-        //TODO handle message.auth token authorization. Make sure that the user
-        //can actually access this service.
+        //Get the message object that was just inserted into the database.
+        let databaseMessageObject = await saveMessageToDatabase(message.message, message.threadId, auth.user.username);
 
-        if (socket.thread === message.threadId) {
-            console.log(message);
-            let databaseMessageObject = await saveMessageToDatabase(message.message, message.threadId, message.username);
+        //Send that message object to the users listening so that they can display the message.
+        socket.to(message.threadId).emit('message', databaseMessageObject);
 
-            socket.to(message.threadId).emit('message', databaseMessageObject);
-        } else {
-            console.error('there has been a grave error');
-        }
+        //TODO in the off chance that all this fails, send a true or false to the requesting user.
     })
 });
 

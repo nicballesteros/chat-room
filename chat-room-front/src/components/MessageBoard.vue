@@ -61,7 +61,10 @@ export default {
             // console.log(this.messages);
             this.title = thread.title;
 
-            this.socket.emit('thread', this.threadId);
+            this.socket.emit('thread', {
+                threadId: this.threadId,
+                auth: this.getToken(),
+            });
         },
         async handleMessageEvent(message) {   
             //Send the message to the server.
@@ -70,7 +73,6 @@ export default {
                 message: message,
                 threadId: this.threadId,
                 auth: this.getToken(),
-                username: this.getUser().username,
             });
 
             this.messages.push({
@@ -93,7 +95,10 @@ export default {
 
                 this.socket.on('connect', () => {
                     //Send to the server the current thread id.
-                    this.socket.emit('thread', this.threadId);
+                    this.socket.emit('thread', {
+                        threadId: this.threadId,
+                        auth: this.getToken(),
+                    });
 
                     this.socket.on('message', (message) => {
                         // console.log(message);
